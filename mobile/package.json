@@ -1,7 +1,7 @@
 {
   "name": "mobile",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -15,6 +15,9 @@
     "@react-navigation/native-stack": "^7.17.6",
     "babel-preset-expo": "~54.0.10",
     "expo": "~54.0.34",
+    "expo-constants": "~18.0.13",
+    "expo-linking": "~8.0.12",
+    "expo-router": "~6.0.24",
     "expo-status-bar": "~3.0.9",
     "nativewind": "^4.2.6",
     "prettier-plugin-tailwindcss": "^0.5.14",
