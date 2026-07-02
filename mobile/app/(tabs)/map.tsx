@@ -100,6 +100,8 @@ export default function MapScreen() {
                 key={loc.device_id}
                 coordinate={{ latitude: lat, longitude: lng }}
                 anchor={{ x: 0.5, y: 0.5 }}
+                title={`Küpe No: ${loc.device_id}`}
+                description={`Pil: ${loc.battery_mv} mV`}
               >
                 <View
                   style={{
