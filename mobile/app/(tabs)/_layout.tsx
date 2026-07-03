@@ -37,6 +37,16 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="devices"
+        options={{
+          title: "Cihazlar",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="hardware-chip" size={size} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
     </Tabs>
   );
 }
