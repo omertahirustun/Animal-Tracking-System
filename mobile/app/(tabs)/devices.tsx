@@ -1,10 +1,129 @@
-import { View, Text } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function devices() {
+export default function DevicesScreen() {
+  const [devices, setDevices] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const fetchDevices = async () => {
+    try {
+      const response = await axios.get(
+        "http://192.168.1.243:3000/api/son-konumlar",
+      );
+      if (Array.isArray(response.data)) {
+        setDevices(response.data);
+      }
+    } catch (error) {
+      console.log("Veri çekilemedi.");
+    }
+  };
+
+  useEffect(() => {
+    fetchDevices();
+    const interval = setInterval(fetchDevices, 10000);
+    return () => clearInterval(interval);
+  }, []);
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchDevices();
+    setIsRefreshing(false);
+  };
+
+  const filteredDevices = devices.filter((device) =>
+    device.device_id.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+  const getBatteryInfo = (mv: number) => {
+    if (mv >= 3800)
+      return { icon: "battery-full", color: "#34d399", text: "İyi" };
+    if (mv >= 3500)
+      return { icon: "battery-half", color: "#fbbf24", text: "Orta" };
+    return { icon: "battery-dead", color: "#ef4444", text: "Kritik" };
+  };
+
   return (
-    <View>
-      <Text>devices</Text>
+    <View className="flex-1 bg-zinc-900 px-4 pt-6">
+      <View className="mb-6 ml-1">
+        <Text className="text-emerald-400 text-3xl font-extrabold">
+          Sürü Listesi
+        </Text>
+        <Text className="text-zinc-400 text-sm mt-1">
+          Toplam {devices.length} aktif cihaz
+        </Text>
+      </View>
+
+      <View className="flex-row items-center bg-zinc-800 rounded-2xl px-4 py-3 mb-6 border border-zinc-700">
+        <Ionicons name="search" size={20} color="#a1a1aa" />
+        <TextInput
+          className="flex-1 ml-3 text-white text-base"
+          placeholder="Küpe numarası ara..."
+          placeholderTextColor="#a1a1aa"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          selectionColor="#34d399"
+        />
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchQuery("")}>
+            <Ionicons name="close-circle" size={20} color="#a1a1aa" />
+          </TouchableOpacity>
+        )}
+      </View>
+
+      <FlatList
+        data={filteredDevices}
+        keyExtractor={(item) => item.device_id}
+        showsVerticalScrollIndicator={false}
+        refreshing={isRefreshing}
+        onRefresh={onRefresh}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        ListEmptyComponent={
+          <View className="items-center justify-center mt-10">
+            <Ionicons name="hardware-chip-outline" size={48} color="#52525b" />
+            <Text className="text-zinc-500 mt-4 text-center">
+              Cihaz bulunamadı.
+            </Text>
+          </View>
+        }
+        renderItem={({ item }) => {
+          const battery = getBatteryInfo(item.battery_mv);
+
+          return (
+            <TouchableOpacity className="bg-zinc-800 rounded-2xl p-4 mb-3 flex-row items-center border border-zinc-700 active:bg-zinc-700">
+              <View className="w-12 h-12 rounded-full bg-zinc-900 items-center justify-center border border-zinc-700">
+                <Ionicons name="radio" size={20} color="#34d399" />
+              </View>
+              <View className="flex-1 ml-4">
+                <Text className="text-white text-lg font-bold tracking-wider">
+                  Küpe No: {item.device_id}
+                </Text>
+                <Text className="text-zinc-400 text-xs mt-1">
+                  Enlem: {parseFloat(item.latitude).toFixed(4)} | Boylam:{" "}
+                  {parseFloat(item.longitude).toFixed(4)}
+                </Text>
+              </View>
+
+              <View className="items-center justify-center">
+                {/* @ts-ignore */}
+                <Ionicons name={battery.icon} size={24} color={battery.color} />
+                <Text
+                  style={{ color: battery.color }}
+                  className="text-xs font-bold mt-1"
+                >
+                  {item.battery_mv} mV
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+      />
     </View>
   );
 }
