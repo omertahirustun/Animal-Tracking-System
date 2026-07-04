@@ -42,22 +42,19 @@ export default function DevicesScreen() {
   const filteredDevices = devices.filter((device) =>
     device.device_id.toLowerCase().includes(searchQuery.toLowerCase()),
   );
-  // Yüzdelik dilimi hesaplayan yeni fonksiyon
   const calculateBatteryPercentage = (mvValue: any) => {
     const mv = parseInt(mvValue, 10);
     if (isNaN(mv)) return null;
 
     const MAX_MV = 3000; // 100%
-    const MIN_MV = 2400; // 0% (ESP32'nin genelde kapandığı voltaj, burayı testlerine göre güncelleyebilirsin)
+    const MIN_MV = 2400; // 0%
 
     if (mv >= MAX_MV) return 100;
     if (mv <= MIN_MV) return 0;
 
-    // Yüzdeyi hesapla ve küsuratları yuvarla
     return Math.round(((mv - MIN_MV) / (MAX_MV - MIN_MV)) * 100);
   };
 
-  // Yüzdeye göre ikon ve renk belirleme
   const getBatteryInfo = (mvValue: any) => {
     const percent = calculateBatteryPercentage(mvValue);
 

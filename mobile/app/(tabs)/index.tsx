@@ -57,7 +57,7 @@ export default function HomeScreen() {
         {/* Ana Giriş Butonu */}
         <TouchableOpacity
           className="bg-emerald-500 active:bg-emerald-600 px-6 py-5 rounded-2xl shadow-lg w-full flex-row justify-center items-center"
-          onPress={() => router.push("/map")}
+          onPress={() => router.navigate("/map")}
         >
           <Text className="text-white text-center font-bold text-lg mr-3 tracking-wide">
             Kontrol Paneline Geç

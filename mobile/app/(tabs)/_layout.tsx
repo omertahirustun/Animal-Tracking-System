@@ -18,6 +18,7 @@ export default function TabLayout() {
       <MaterialTopTabs
         initialRouteName="index"
         tabBarPosition="bottom"
+        backBehavior="initialRoute"
         screenOptions={{
           swipeEnabled: true,
           animationEnabled: true,
