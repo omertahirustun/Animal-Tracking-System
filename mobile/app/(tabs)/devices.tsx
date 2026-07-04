@@ -42,12 +42,32 @@ export default function DevicesScreen() {
   const filteredDevices = devices.filter((device) =>
     device.device_id.toLowerCase().includes(searchQuery.toLowerCase()),
   );
-  const getBatteryInfo = (mv: number) => {
-    if (mv >= 3800)
-      return { icon: "battery-full", color: "#34d399", text: "İyi" };
-    if (mv >= 3500)
-      return { icon: "battery-half", color: "#fbbf24", text: "Orta" };
-    return { icon: "battery-dead", color: "#ef4444", text: "Kritik" };
+  // Yüzdelik dilimi hesaplayan yeni fonksiyon
+  const calculateBatteryPercentage = (mvValue: any) => {
+    const mv = parseInt(mvValue, 10);
+    if (isNaN(mv)) return null;
+
+    const MAX_MV = 3000; // 100%
+    const MIN_MV = 2400; // 0% (ESP32'nin genelde kapandığı voltaj, burayı testlerine göre güncelleyebilirsin)
+
+    if (mv >= MAX_MV) return 100;
+    if (mv <= MIN_MV) return 0;
+
+    // Yüzdeyi hesapla ve küsuratları yuvarla
+    return Math.round(((mv - MIN_MV) / (MAX_MV - MIN_MV)) * 100);
+  };
+
+  // Yüzdeye göre ikon ve renk belirleme
+  const getBatteryInfo = (mvValue: any) => {
+    const percent = calculateBatteryPercentage(mvValue);
+
+    if (percent === null)
+      return { icon: "battery-dead", color: "#52525b", display: "Veri Yok" };
+    if (percent >= 60)
+      return { icon: "battery-full", color: "#34d399", display: `%${percent}` }; // Zümrüt
+    if (percent >= 25)
+      return { icon: "battery-half", color: "#fbbf24", display: `%${percent}` }; // Sarı
+    return { icon: "battery-dead", color: "#ef4444", display: `%${percent}` }; // Kırmızı
   };
 
   return (
@@ -111,14 +131,17 @@ export default function DevicesScreen() {
                 </Text>
               </View>
 
-              <View className="items-center justify-center">
+              {/* Sağ Kısım: Batarya */}
+              <View className="items-center justify-center w-20">
                 {/* @ts-ignore */}
                 <Ionicons name={battery.icon} size={24} color={battery.color} />
                 <Text
                   style={{ color: battery.color }}
-                  className="text-xs font-bold mt-1"
+                  className="text-sm font-bold mt-1 text-center"
+                  numberOfLines={1}
+                  adjustsFontSizeToFit={true}
                 >
-                  {item.battery_mv} mV
+                  {battery.display}
                 </Text>
               </View>
             </TouchableOpacity>
