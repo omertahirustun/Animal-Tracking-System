@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useState, useEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -50,7 +51,7 @@ export default function DevicesScreen() {
   };
 
   return (
-    <View className="flex-1 bg-zinc-900 px-4 pt-6">
+    <SafeAreaView className="flex-1 bg-zinc-900 px-4 pt-6">
       <View className="mb-6 ml-1">
         <Text className="text-emerald-400 text-3xl font-extrabold">
           Sürü Listesi
@@ -124,6 +125,6 @@ export default function DevicesScreen() {
           );
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 }

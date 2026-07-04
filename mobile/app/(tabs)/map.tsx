@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
@@ -60,8 +61,8 @@ export default function MapScreen() {
   }, [locations, isMapReady]);
 
   return (
-    <View className="flex-1 bg-zinc-900 px-4">
-      <View className="mb-4 ml-1 flex-row justify-between items-center">
+    <SafeAreaView className="flex-1 bg-zinc-900 px-4">
+      <View className="mb-4 ml-1 flex-row justify-between items-center pt-6">
         <View>
           <Text className="text-emerald-400 text-3xl font-extrabold">
             Sürü Takibi
@@ -119,7 +120,6 @@ export default function MapScreen() {
         </MapView>
       </View>
 
-      {/* ALT KONTROL PANELİ */}
       <View style={{ flex: 1 }} className="justify-center">
         <View className="bg-zinc-800 p-4 rounded-2xl flex-row justify-between items-center border border-zinc-700">
           <View>
@@ -141,6 +141,6 @@ export default function MapScreen() {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -1,53 +1,70 @@
-import { Tabs } from "expo-router";
+import { withLayoutContext } from "expo-router";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Ionicons } from "@expo/vector-icons";
+
+const { Navigator } = createMaterialTopTabNavigator();
+
+export const MaterialTopTabs = withLayoutContext(Navigator);
 
 export default function TabLayout() {
   return (
-    <Tabs
+    <MaterialTopTabs
+      initialRouteName="index"
+      tabBarPosition="bottom"
       screenOptions={{
-        headerStyle: { backgroundColor: "#18181b" },
-        headerTintColor: "#34d399",
-        headerTitleStyle: { fontWeight: "bold" },
+        swipeEnabled: true,
+        animationEnabled: true,
         tabBarStyle: {
           backgroundColor: "#18181b",
           borderTopColor: "#27272a",
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 8,
+          borderTopWidth: 1,
+          elevation: 0,
+          shadowOpacity: 0,
         },
         tabBarActiveTintColor: "#34d399",
         tabBarInactiveTintColor: "#a1a1aa",
+        tabBarIndicatorStyle: {
+          backgroundColor: "#34d399",
+          height: 3,
+        },
+        tabBarShowIcon: true,
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "bold",
+          textTransform: "none",
+          marginTop: 2,
+        },
       }}
     >
-      <Tabs.Screen
+      <MaterialTopTabs.Screen
         name="map"
         options={{
           title: "Harita",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="map" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Ana Sayfa",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+          tabBarIcon: ({ color }: { color: string }) => (
+            <Ionicons name="map" size={22} color={color} />
           ),
         }}
       />
 
-      <Tabs.Screen
+      <MaterialTopTabs.Screen
+        name="index"
+        options={{
+          title: "Ana Sayfa",
+          tabBarIcon: ({ color }: { color: string }) => (
+            <Ionicons name="home" size={22} color={color} />
+          ),
+        }}
+      />
+
+      <MaterialTopTabs.Screen
         name="devices"
         options={{
           title: "Cihazlar",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="hardware-chip" size={size} color={color} />
+          tabBarIcon: ({ color }: { color: string }) => (
+            <Ionicons name="hardware-chip" size={22} color={color} />
           ),
-          headerShown: false,
         }}
       />
-    </Tabs>
+    </MaterialTopTabs>
   );
 }
