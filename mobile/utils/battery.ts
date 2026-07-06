@@ -17,9 +17,57 @@ export function calculateBatteryPercentage(
     ((mv - BATTERY_MIN_MV) / (BATTERY_MAX_MV - BATTERY_MIN_MV)) * 100,
   );
 }
-
 export function getBatteryStatus(percentage: number): BatteryStatus {
   if (percentage >= HEALTHY_THRESHOLD_PERCENT) return "healthy";
   if (percentage > 0) return "low";
   return "inactive";
+}
+
+const DEVICE_LIST_COLORS = {
+  full: "#34d399",
+  half: "#fbbf24",
+  critical: "#ef4444",
+  unknown: "#52525b",
+} as const;
+
+export interface BatteryDisplayInfo {
+  icon: "battery-full" | "battery-half" | "battery-dead";
+  color: string;
+  display: string;
+}
+
+export function getDeviceBatteryInfo(
+  mvValue: number | string | null | undefined,
+): BatteryDisplayInfo {
+  const mv = typeof mvValue === "string" ? parseInt(mvValue, 10) : mvValue;
+
+  if (mv == null || isNaN(mv)) {
+    return {
+      icon: "battery-dead",
+      color: DEVICE_LIST_COLORS.unknown,
+      display: "Veri Yok",
+    };
+  }
+
+  const percent = calculateBatteryPercentage(mv);
+
+  if (percent >= 60) {
+    return {
+      icon: "battery-full",
+      color: DEVICE_LIST_COLORS.full,
+      display: `%${percent}`,
+    };
+  }
+  if (percent >= 25) {
+    return {
+      icon: "battery-half",
+      color: DEVICE_LIST_COLORS.half,
+      display: `%${percent}`,
+    };
+  }
+  return {
+    icon: "battery-dead",
+    color: DEVICE_LIST_COLORS.critical,
+    display: `%${percent}`,
+  };
 }
